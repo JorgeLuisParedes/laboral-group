@@ -37,4 +37,34 @@ switch ($method) {
 
 		echo json_encode(['status' => 200, 'message' => 'OK']);
 		break;
+
+	case 'PUT':
+		$data = json_decode(file_get_contents("php://input"));
+
+		$nId = isset($data->nId) ? $data->nId : null;
+		$sDni = isset($data->sDni) ? $data->sDni : null;
+		$sNombre = isset($data->sNombre) ? $data->sNombre : null;
+		$dFechaNacimiento = isset($data->dFechaNacimiento) ? $data->dFechaNacimiento : null;
+		$sTelefono =  isset($data->sTelefono) ? $data->sTelefono : null;
+		$sEmail = isset($data->sEmail) ? $data->sEmail : null;
+
+		$sql = "UPDATE users SET  sDni = :sDni, sNombre = :sNombre, dFechaNacimiento = :dFechaNacimiento, sTelefono = :sTelefono, sEmail = :sEmail WHERE nId = :nId";
+		$stmt = $con->prepare($sql);
+
+		if (($sDni === null) || ($sNombre === null) || ($dFechaNacimiento === null)) {
+			echo json_encode(['status' => 502, 'message' => 'Bad Gateway']);
+			break;
+		}
+
+		$stmt->execute([
+			':sDni' => $sDni,
+			':sNombre' => $sNombre,
+			':dFechaNacimiento' => $dFechaNacimiento,
+			':sTelefono' => $sTelefono,
+			':sEmail' => $sEmail,
+			':nId' => $nId
+		]);
+
+		echo json_encode(['status' => 200, 'message' => 'OK']);
+		break;
 }
