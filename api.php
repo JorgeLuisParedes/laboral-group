@@ -1,7 +1,7 @@
 <?php
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE");
+header("Access-Control-Allow-Methods: POST, GET, PUT");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 include_once 'db.php';
@@ -27,13 +27,39 @@ switch ($method) {
 		$sEmail = isset($data->sEmail) ? $data->sEmail : null;
 
 		if (($sDni === null) || ($sNombre === null) || ($dFechaNacimiento === null)) {
-			echo json_encode(['status' => 502, 'message' => 'Bad Gateway']);
+			echo json_encode(['status' => 400, 'message' => 'Bad Request']);
 			break;
 		}
 
-		$sql = "INSERT INTO users (sDni, sNombre, dFechaNacimiento, sTelefono, sEmail) VALUES (:sDni, :sNombre, :dFechaNacimiento, :sTelefono, :sEmail)";
+		if ((strlen($sDni) > 9) || (preg_match("/^\d{4}-\d{2}-\d{2}$/", $dFechaNacimiento)) || (preg_match("/^\d{9}$/", $sTelefono))) {
+			echo json_encode(['status' => 400, 'message' => 'Bad Request']);
+			break;
+		}
+
+		$sql = "INSERT INTO users (
+			sDni,
+			sNombre,
+			dFechaNacimiento,
+			sTelefono,
+			sEmail
+			)
+			VALUES (
+				:sDni,
+				:sNombre,
+				:dFechaNacimiento,
+				:sTelefono,
+				:sEmail
+			)";
+
 		$stmt = $con->prepare($sql);
-		$stmt->execute(['sDni' => $sDni, 'sNombre' => $sNombre, 'dFechaNacimiento' => $dFechaNacimiento, 'sTelefono' => $sTelefono, 'sEmail' => $sEmail]);
+
+		$stmt->execute([
+			'sDni' => $sDni,
+			'sNombre' => $sNombre,
+			'dFechaNacimiento' => $dFechaNacimiento,
+			'sTelefono' => $sTelefono,
+			'sEmail' => $sEmail
+		]);
 
 		echo json_encode(['status' => 200, 'message' => 'OK']);
 		break;
@@ -48,13 +74,27 @@ switch ($method) {
 		$sTelefono =  isset($data->sTelefono) ? $data->sTelefono : null;
 		$sEmail = isset($data->sEmail) ? $data->sEmail : null;
 
-		$sql = "UPDATE users SET  sDni = :sDni, sNombre = :sNombre, dFechaNacimiento = :dFechaNacimiento, sTelefono = :sTelefono, sEmail = :sEmail WHERE nId = :nId";
-		$stmt = $con->prepare($sql);
-
-		if (($sDni === null) || ($sNombre === null) || ($dFechaNacimiento === null)) {
-			echo json_encode(['status' => 502, 'message' => 'Bad Gateway']);
+		if (($nId === null) || ($sDni === null) || ($sNombre === null) || ($dFechaNacimiento === null)) {
+			echo json_encode(['status' => 400, 'message' => 'Bad Request']);
 			break;
 		}
+
+		if ((strlen($sDni) > 9) || (preg_match("/^\d{4}-\d{2}-\d{2}$/", $dFechaNacimiento)) || (preg_match("/^\d{9}$/", $sTelefono))) {
+			echo json_encode(['status' => 400, 'message' => 'Bad Request']);
+			break;
+		}
+
+		$sql = "UPDATE users
+			SET
+				sDni = :sDni,
+				sNombre = :sNombre,
+				dFechaNacimiento = :dFechaNacimiento,
+				sTelefono = :sTelefono,
+				sEmail = :sEmail
+			WHERE
+				nId = :nId";
+
+		$stmt = $con->prepare($sql);
 
 		$stmt->execute([
 			':sDni' => $sDni,
@@ -66,5 +106,9 @@ switch ($method) {
 		]);
 
 		echo json_encode(['status' => 200, 'message' => 'OK']);
+		break;
+
+	default:
+		header("HTTP/1.1 405 Method Not Allowed");
 		break;
 }
