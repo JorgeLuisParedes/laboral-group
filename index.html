@@ -65,10 +65,9 @@
 
 					<div class="d-flex justify-content-between">
 
-
 						<h4 class="h4 text-gray-800">Listado de usuarios</h4>
 
-						<a class="btn btn-primary mb-2">
+						<a class="btn btn-primary mb-2 modalNuevoUsuario">
 							Nuevo usuario
 						</a>
 
@@ -78,9 +77,10 @@
 					<div class="card shadow mb-4">
 						<div class="card-body">
 							<div class="table-responsive">
-								<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+								<table class="table table-bordered" id="tablaUsuarios" width="100%" cellspacing="0">
 									<thead>
 										<tr>
+											<th>Id</th>
 											<th>Nombre</th>
 											<th>DNI</th>
 											<th>Fecha de nacimiento</th>
@@ -88,15 +88,6 @@
 											<th>Email</th>
 										</tr>
 									</thead>
-									<tbody>
-										<tr>
-											<td>Jorge Luis Paredes</td>
-											<td>Y7577693N</td>
-											<td>1979-04-12</td>
-											<td>691357080</td>
-											<td>paredesjorgeluis@gmail.com</td>
-										</tr>
-									</tbody>
 								</table>
 							</div>
 						</div>
@@ -114,6 +105,72 @@
 	</div>
 	<!-- End of Page Wrapper -->
 
+	<!-- Modal usuario -->
+	<div class="modal fade" id="modalUsuario" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalTitle"></h5>
+					<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<form id="formularioUsuario">
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="sNombre">Nombre:</label>
+							<input class="form-control" type="text" name="sNombre" id="sNombre" required>
+						</div>
+						<div class="form-group">
+							<label for="sEmail">Email:</label>
+							<input class="form-control" type="text" name="sEmail" id="sEmail">
+						</div>
+						<div class="form-group">
+							<label for="sTelefono">Teléfono:</label>
+							<input class="form-control" type="text" name="sTelefono" id="sTelefono" pattern=".{9,9}"
+								title="El télefono debe contener exactamente 9 caracteres">
+						</div>
+						<div class="form-group">
+							<label for="sDni">DNI:</label>
+							<input class="form-control" type="text" name="sDni" id="sDni" pattern=".{9,9}"
+								title="El DNI debe contener exactamente 9 caracteres" required>
+						</div>
+						<div class="form-group">
+							<label for="dFechaNacimiento">Fecha de nacimiento:</label>
+							<input class="form-control" type="date" name="dFechaNacimiento" id="dFechaNacimiento"
+								pattern=".{11,11}"
+								title="El formato de la fecha debe contener exactamente 11 caracteres" required>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button id="botonUsuario" class="btn btn-primary" type="submit">Guardar</button>
+						<a class="btn btn-Light" data-dismiss="modal">Cancel</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal respuesta -->
+	<div class="modal fade" id="modalRespuesta" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalTitleRespuesta"></h5>
+					<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p id="sMensaje"></p>
+				</div>
+				<div class="modal-footer">
+					<a class="btn btn-primary" id="btnAceptar" data-dismiss="modal">Aceptar</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- Bootstrap core JavaScript-->
 	<script src="vendor/jquery/jquery.min.js"></script>
 	<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -129,7 +186,7 @@
 	<script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
 	<!-- Page level custom scripts -->
-	<script src="js/demo/datatables-demo.js"></script>
+	<script src="js/scripts.js"></script>
 
 </body>
 

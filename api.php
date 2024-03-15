@@ -10,21 +10,37 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
 	case 'GET':
-		$sql = "SELECT * FROM users";
-		$stmt = $con->prepare($sql);
-		$stmt->execute();
-		$data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		echo json_encode($data);
+		if (isset($_GET['nId'])) {
+			$nId = $_GET['nId'];
+
+			$sql = "SELECT * FROM users WHERE nid = :nId";
+			$stmt = $con->prepare($sql);
+			$stmt->execute(['nId' => $nId]);
+			$data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+			if ($data) {
+				echo json_encode($data);
+			} else {
+				echo json_encode(['status' => 404, 'message' => 'Not Found']);
+			}
+		} else {
+			$sql = "SELECT * FROM users";
+			$stmt = $con->prepare($sql);
+			$stmt->execute();
+			$data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			echo json_encode($data);
+		}
 		break;
 
 	case 'POST':
-		$data = json_decode(file_get_contents("php://input"));
+		$data = file_get_contents("php://input");
+		$input = json_decode($data, TRUE);
 
-		$sDni = isset($data->sDni) ? $data->sDni : null;
-		$sNombre = isset($data->sNombre) ? $data->sNombre : null;
-		$dFechaNacimiento = isset($data->dFechaNacimiento) ? $data->dFechaNacimiento : null;
-		$sTelefono =  isset($data->sTelefono) ? $data->sTelefono : null;
-		$sEmail = isset($data->sEmail) ? $data->sEmail : null;
+		$sNombre = !empty($input['sNombre']) ? $input['sNombre'] : null;
+		$dFechaNacimiento = !empty($input['dFechaNacimiento']) ? $input['dFechaNacimiento'] : null;
+		$sTelefono = !empty($input['sTelefono']) ? $input['sTelefono'] : null;
+		$sEmail = !empty($input['sEmail']) ? $input['sEmail'] : null;
+		$sDni = !empty($input['sDni']) ? $input['sDni'] : null;
 
 		if (($sDni === null) || ($sNombre === null) || ($dFechaNacimiento === null)) {
 			echo json_encode(['status' => 400, 'message' => 'Bad Request']);
@@ -65,14 +81,15 @@ switch ($method) {
 		break;
 
 	case 'PUT':
-		$data = json_decode(file_get_contents("php://input"));
+		$data = file_get_contents("php://input");
+		$input = json_decode($data, TRUE);
 
-		$nId = isset($data->nId) ? $data->nId : null;
-		$sDni = isset($data->sDni) ? $data->sDni : null;
-		$sNombre = isset($data->sNombre) ? $data->sNombre : null;
-		$dFechaNacimiento = isset($data->dFechaNacimiento) ? $data->dFechaNacimiento : null;
-		$sTelefono =  isset($data->sTelefono) ? $data->sTelefono : null;
-		$sEmail = isset($data->sEmail) ? $data->sEmail : null;
+		$nId = !empty($input['nId']) ? $input['nId'] : null;
+		$sNombre = !empty($input['sNombre']) ? $input['sNombre'] : null;
+		$dFechaNacimiento = !empty($input['dFechaNacimiento']) ? $input['dFechaNacimiento'] : null;
+		$sTelefono = !empty($input['sTelefono']) ? $input['sTelefono'] : null;
+		$sEmail = !empty($input['sEmail']) ? $input['sEmail'] : null;
+		$sDni = !empty($input['sDni']) ? $input['sDni'] : null;
 
 		if (($nId === null) || ($sDni === null) || ($sNombre === null) || ($dFechaNacimiento === null)) {
 			echo json_encode(['status' => 400, 'message' => 'Bad Request']);
