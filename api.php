@@ -31,7 +31,7 @@ switch ($method) {
 			break;
 		}
 
-		if ((strlen($sDni) > 9) || (preg_match("/^\d{4}-\d{2}-\d{2}$/", $dFechaNacimiento)) || (preg_match("/^\d{9}$/", $sTelefono))) {
+		if ((strlen($sDni) !== 9) || (strlen($dFechaNacimiento) !== 10) || (($sTelefono !== null) && (strlen($sTelefono) !== 9))) {
 			echo json_encode(['status' => 400, 'message' => 'Bad Request']);
 			break;
 		}
@@ -79,7 +79,7 @@ switch ($method) {
 			break;
 		}
 
-		if ((strlen($sDni) > 9) || (preg_match("/^\d{4}-\d{2}-\d{2}$/", $dFechaNacimiento)) || (preg_match("/^\d{9}$/", $sTelefono))) {
+		if ((strlen($sDni) !== 9) || (strlen($dFechaNacimiento) !== 10) || (($sTelefono !== null) && (strlen($sTelefono) !== 9))) {
 			echo json_encode(['status' => 400, 'message' => 'Bad Request']);
 			break;
 		}
